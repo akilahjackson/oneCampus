@@ -2,7 +2,7 @@
 
 One.UMD is the branded oneCampus solution for the University of Maryland. This PHP script allows an API account (with basic authentication) to submit a local JSON file via CURL to the Task Management interface for approval.
 
-*NOTE : This script is just a prototype for a more complex batch processing script and can only accept only Task per JSON file. *
+*NOTE : This script is just a prototype for a more complex batch processing script and can only accept one Task per JSON file. *
 
 ### Here is the sample JSON file.  
 Copy & Paste the JSON below to the same folder as the script and when prompted for the local file just use the name and extension of the JSON file. _I used the filename : newtask.json_
