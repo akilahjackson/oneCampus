@@ -1,0 +1,24 @@
+Import Results for taskID : 500 Internal Server Error
+{
+    "op":  ". $data[1] . ",
+    "path": ". $data[2] . ",
+    "value": ". $data[3] . "
+  }
+{
+    "op":  ". $data[1] . ",
+    "path": ". $data[2] . ",
+    "value": ". $data[3] . "
+  }
+
+Import Results for 12909 : 428 
+{
+    "op":  ". $data[1] . ",
+    "path": ". $data[2] . ",
+    "value": ". $data[3] . "
+  }
+{
+    "op":  ". $data[1] . ",
+    "path": ". $data[2] . ",
+    "value": ". $data[3] . "
+  }
+

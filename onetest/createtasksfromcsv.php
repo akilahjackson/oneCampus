@@ -4,8 +4,8 @@
 //$line = trim(fgets(STDIN));
 //$username = $line;
 
-$username="curlpublisher";
-$password="xxxxx--top-secret---xxx";
+$username="superPublisher";
+$password="SuperPublisher2016!";
 
 //echo "One.UMD API password:" ;
 //$line = trim(fgets(STDIN));

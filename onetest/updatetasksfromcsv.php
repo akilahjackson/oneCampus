@@ -5,7 +5,7 @@
 //$username = $line;
 
 $username="superPublisher";
-$password="xxxxx--top--secret---xxx";
+$password="SuperPublisher2016!";
 
 //echo "One.UMD API password:" ;
 //$line = trim(fgets(STDIN));
@@ -44,7 +44,7 @@ $jsonstring = '{
 $ch = curl_init();
 
 // set url
-curl_setopt($ch, CURLOPT_URL, "https://one.umd.edu/rest-api/secure/tasks" . $data[0] );
+curl_setopt($ch, CURLOPT_URL, "https://one.umd.edu/rest-api/secure/tasks/" . $data[0] );
 
 // set the HTTP header
 
@@ -139,6 +139,9 @@ echo PHP_EOL;
 echo "Import Results for ". $data[0] . " : " . $importStatus . PHP_EOL;
 
 echo PHP_EOL;
+echo "Operation: " . PHP_EOL;
+echo $data[1] . PHP_EOL;
+echo PHP_EOL;
 echo "Field: " . PHP_EOL;
 echo $data[2] . PHP_EOL;
 echo PHP_EOL;
@@ -152,7 +155,7 @@ echo PHP_EOL;
 
 if ($status > 202) {
 	
-$failedCurloutput = "Import Results for ". $data[0] . " : " . $status . " ". $importStatus . "\n" . $jsonstring ;
+$failedCurloutput = "Update Results for ". $data[0] . " : " . $status . " ". $importStatus . "\n" . $jsonstring ;
 
 $logtitle = "Failed Updates Log for " . date('D-MdY gHi A');
 
