@@ -29,46 +29,112 @@ $cleanfield1 = htmlspecialchars($dirtyfield1, ENT_QUOTES);
      
 
 //****************************************************************COMBINE THE ROW COLUMNS WITH CONVERTED IMAGE AND ADD THE NESTED STRUCTURES TO BUILD FULL JSON 
-$jsonstring = '{
+$jsonstring = '[{
     "op":  ". $data[1] . ",
     "path": ". $data[2] . ",
     "value": ". $data[3] . "
-  }';
+  }]';
 
 
 
 //****************************************************************DEBUG
 //****************************************************************WRITE JSON TO SCREEN BUT THERE YOU WOULD ADD YOUR CURL TO SEND IT TO ONE    
 
-// create curl resource
+// create curl resource"
 $ch = curl_init();
 
 // set url
 curl_setopt($ch, CURLOPT_URL, "https://one.umd.edu/rest-api/secure/tasks/" . $data[0] );
-
-// set the HTTP header
-
-curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Content-Type: application/hal+json;version=1'));
 
 // set the authenication with Basic authentication
 
 curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
 
 // change the request to a Patch instead of a Post
-curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 
 //return the transfer as a string
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonstring);
+//curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonstring);
 
+curl_setopt($ch, CURLOPT_HEADER, true);
+curl_setopt($ch, CURLOPT_NOBODY, true);
 
 // $output contains the output string
 
 $output = curl_exec($ch);
 
+// retunr header in an array
+function parse_http_head ($str) {
+
+    $result = array();
+
+    // Split into lines
+    $lines = explode("\r\n", $str);
+
+    // Handle response line
+    $line = explode(' ', array_shift($lines), 3);
+    $version = explode('/', $line[0]);
+    $result['version'] = (float) $version[1];
+    $result['code'] = (int) $line[1];
+    $result['text'] = $line[2];
+
+    // Parse headers
+    $result['headers'] = array();
+    while ($line = trim(array_shift($lines))) {
+      list($name, $val) = explode(':', $line, 2);
+      $name = strtolower(trim($name)); // Header names are case-insensitive, so convert them all to lower case so we can easily use isset()
+      if (isset($result['headers'][$name])) { // Some headers (like Set-Cookie:) may appear more than once, so convert them to an array if necessary
+        $result['headers'][$name] = (array) $result['headers'][$name];
+        $result['headers'][$name][] = trim($val);
+      } else {
+        $result['headers'][$name] = trim($val);
+      }
+    }
+
+    return $result;
+
+  }
+
+$parsed = parse_http_head($output);
+$dirtycurrentEtag = $parsed["headers"]["etag"];
+$currentEtag = addslashes($dirtycurrentEtag);
+
+ //close curl resource to free up system resources
+//curl_close($ch); 
+
+
+// create curl resource"
+$ch2 = curl_init();
+
+// set url
+curl_setopt($ch2, CURLOPT_URL, "https://one.umd.edu/rest-api/secure/tasks/" . $data[0] );
+
+// set the HTTP header
+
+curl_setopt($ch2, CURLOPT_HTTPHEADER, array ('Content-Type: application/json', "'If-None-Match:". $currentEtag ."'" , 'Accept: application/hal+json;version=1'));
+
+// set the authenication with Basic authentication
+
+curl_setopt($ch2, CURLOPT_USERPWD, $username . ":" . $password);
+
+// change the request to a Patch instead of a Post
+curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, 'PATCH');
+
+//return the transfer as a string
+curl_setopt($ch2, CURLOPT_RETURNTRANSFER, 1);
+
+curl_setopt($ch2, CURLOPT_POSTFIELDS, $jsonstring);
+
+// $output contains the output string
+
+$output = curl_exec($ch2);
+
+
 // $status contains the HTTP response code
-$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$status = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
+
 
 // HTTP Response codes as an array
 
@@ -130,14 +196,18 @@ $http_codes = array(
     510 => 'Not Extended'
 );
 
-$importStatus = $http_codes[$status];
+$updateStatus = $http_codes[$status];
 
 
-echo "IMPORT RESULTS FOR " . date('D - M/d/Y g:H:i A') . " BATCH" . PHP_EOL;
+echo "UPDATE RESULTS FOR " . date('D - M/d/Y g:H:i A') . " BATCH" . PHP_EOL;
 echo PHP_EOL;
 echo PHP_EOL;
-echo "Import Results for ". $data[0] . " : " . $importStatus . PHP_EOL;
 
+echo "UPDATE Results for ". $data[0] . " : " . $updateStatus . PHP_EOL;
+
+echo PHP_EOL;
+echo "Current Etag: " . PHP_EOL;
+echo $currentEtag . PHP_EOL;
 echo PHP_EOL;
 echo "Operation: " . PHP_EOL;
 echo $data[1] . PHP_EOL;
@@ -155,7 +225,7 @@ echo PHP_EOL;
 
 if ($status > 202) {
 	
-$failedCurloutput = "Update Results for ". $data[0] . " : " . $status . " ". $importStatus . "\n" . $jsonstring ;
+$failedCurloutput = "Update Results for ". $data[0] . " : " . $status . " ". $updateStatus . "\n" . $jsonstring ;
 
 $logtitle = "Failed Updates Log for " . date('D-MdY gHi A');
 
@@ -164,6 +234,13 @@ $fp = fopen("logs/".$logtitle.".txt", 'a+');
 
 
 fwrite($fp, $failedCurloutput);
+fwrite($fp,"\r\n");
+fwrite($fp, "Escaped ETAG: ");
+fwrite($fp, $currentEtag);
+fwrite($fp,"\r\n");
+fwrite($fp,"\r\n");
+fwrite($fp, $output);
+fwrite($fp,"\r\n");
 fwrite($fp,"\r\n");
 fwrite($fp, $jsonstring);
 fwrite($fp,"\r\n");
@@ -181,7 +258,7 @@ fclose($fp);
  //close curl resource to free up system resources
 curl_close($ch); 
 
-
+curl_close($ch2);
 //echo $jsonstring;
 
     }
