@@ -263,7 +263,12 @@ fwrite($fp,"\r\n");
 fwrite($fp, $jsonstring);
 fwrite($fp,"\r\n");
 fwrite($fp,"\r\n");
-
+fwrite($fp, $output);
+fwrite($fp,"\r\n");
+fwrite($fp,"\r\n");
+fwrite($fp,"-----------------------------------------------------------");
+fwrite($fp,"\r\n");
+fwrite($fp,"\r\n");
 
 //Ask cURL to write the contents to a file
 
