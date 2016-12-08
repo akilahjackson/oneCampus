@@ -4,15 +4,18 @@
 //$line = trim(fgets(STDIN));
 //$username = $line;
 
-$username="superPublisher";
-$password="SuperPublisher2016!";
+//$username="superPublisher";
+//$password="SuperPublisher2016!";
+
+$username="curlpublisher";
+$password="Curlpublisher2016!";
 
 //echo "One.UMD API password:" ;
 //$line = trim(fgets(STDIN));
 //$password = $line;
 
 $thepath = getcwd();
-$csvfile = 'data/BryceTasksreadyforimport-doublequotes2.csv';
+$csvfile = 'data/newtasksforimport-nov21-run-1.csv';
 
 
 //****************************************************************READ IN FILE
