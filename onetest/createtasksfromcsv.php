@@ -4,18 +4,19 @@
 //$line = trim(fgets(STDIN));
 //$username = $line;
 
-//$username="superPublisher";
-//$password="SuperPublisher2016!";
+$username="superPublisher";
+$password="SuperPublisher2016!";
 
-$username="curlpublisher";
-$password="Curlpublisher2016!";
+//Testing Credentials
+//$username="curlpublisher";
+//$password="Curlpublisher2016!";
 
 //echo "One.UMD API password:" ;
-//$line = trim(fgets(STDIN));
+//$line = trim(fgets(STDIN));s
 //$password = $line;
 
 $thepath = getcwd();
-$csvfile = 'data/newtasksforimport-nov21-run-1.csv';
+$csvfile = 'data/newtasksforimport-dec12-run1.csv';
 
 
 //****************************************************************READ IN FILE
@@ -58,6 +59,8 @@ $category = trim($category, ",");
 
 
 //****************************************************************BUILD THE NESTED ROLE STRUCTURE
+
+	
 $roles = '"roles": [';
 $rolecodes = explode(",", $data[15]	);
 $i = 0;
@@ -75,17 +78,16 @@ foreach ($rolecodes as &$rolevalue) {
 	     $i++;
 }    
 $roles = trim($roles, ",");
-    $roles = $roles  . ']';
-
-
+    $roles = $roles  . ']'; 
+   
 //****************************************************************BUILD THE NESTED MARKET STRUCTURE
 $markets = '"markets": [';
-$marketcodes = explode(",", $data[14]	);
+$marketcodes = explode(",", $data[14] );
 $i = 0;
 $len=count($marketcodes);
 foreach ($marketcodes as &$marketvalue) {
 	if ($i == 0) 
-	{
+	{ 
     $markets = $markets  . '{"marketId": ' . $marketvalue  . '},';
      } else if ($i == $len -1) {
 	      $markets = $markets  . '{"marketId": ' . $marketvalue  . '}';
@@ -125,7 +127,7 @@ $jsonstring = '{
       "screenSize": "DESKTOP",
       "mediaType": "IMAGE",
       "content": "' . $base64 . '",
-      "name": "' . $data[17] . '",
+      "name": "' . $data[2] . '",
       "formatType": "image/jpeg",
       "caption": "' . $data[2] . '"
      }
